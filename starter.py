@@ -64,11 +64,11 @@ def benchmark(expected, file, items, args, expansion, unlocks={}, locks=[], amou
 
 # benchmark(48.63, "power", {Items.Carrot:2048}, {"goal":10000}, 9, {}, [], 5)
 
-# benchmark("33.19", "pumpkin", {Items.Power:999999999,Items.Carrot:999999999}, {"goal":1080}, 4, {Unlocks.Pumpkins: 1}, [Unlocks.Megafarm], 10)
+# benchmark(33.1, "pumpkin", {Items.Power:999999999,Items.Carrot:999999999}, {"goal":1080}, 4, {Unlocks.Pumpkins: 1}, [Unlocks.Megafarm], 10)
 # quick_print("Recover")
-# benchmark("73.55", "pumpkin", {Items.Power:999999999,Items.Carrot:308}, {"goal":1024}, 3, {Unlocks.Pumpkins: 1}, [Unlocks.Megafarm], 1)
+# benchmark(49.1, "pumpkin", {Items.Power:999999999,Items.Carrot:308}, {"goal":1024}, 3, {Unlocks.Pumpkins: 1}, [Unlocks.Megafarm], 1)
 # quick_print("Mega")
-# benchmark(13.7, "pumpkin", {Items.Power:999999999,Items.Carrot:999999999}, {"goal":3145728}, 9)
+# benchmark(13.5, "pumpkin", {Items.Power:999999999,Items.Carrot:999999999}, {"goal":3145728}, 9)
 
 # benchmark("75,69", "Cactus", {Items.Power:999999,Items.Pumpkin:9999999}, {"goal":1000}, 6, {Unlocks.Cactus: 1}, [Unlocks.Megafarm], 5)
 # benchmark("50,64", "Cactus", {Items.Power:999999,Items.Pumpkin:9999999}, {"goal":1000}, 9, {}, [], 5)
@@ -84,4 +84,4 @@ def benchmark(expected, file, items, args, expansion, unlocks={}, locks=[], amou
 # benchmark("138.21", "Dinosaur", {Items.Cactus: 999999999}, {"goal": 1000}, 6)
 # benchmark("1865.85", "Dinosaur", {Items.Cactus: 999999999}, {"goal": 1000}, 9)
 
-benchmark(5456.9, "Main", {}, {}, 0, {}, Unlocks, 5)
+benchmark(5398, "Main", {}, {}, 0, {}, Unlocks, 5)

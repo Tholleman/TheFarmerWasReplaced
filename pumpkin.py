@@ -4,6 +4,7 @@ import Globals
 import Harvesting
 import Preperations
 import UnlockHelper
+import Utils
 import ground
 import movement
 
@@ -25,9 +26,10 @@ def harvestPumpkin(amount, currentlyUnlocking, indent):
 def plantFieldFullOfPumpkins():
 	if not ground.prepareGround(Grounds.Soil, plantPumpkin):
 		Defer.everyTile(plantPumpkin)
-	dronesNeeded=min(get_world_size(), max_drones())
-	rowsPerDrone=get_world_size()/dronesNeeded
-	def babysit():
+	def manageRegion(c1, c2):
+		c1=Defer.splitRegion(c1, c2, manageRegion)
+		width=c2[0] - c1[0]
+		height=c2[1] - c1[1]
 		notFullyGrown=[]
 		def storeGrowingPumpkins():
 			if get_entity_type() == Entities.Pumpkin and can_harvest():
@@ -35,13 +37,18 @@ def plantFieldFullOfPumpkins():
 			notFullyGrown.append(movement.getPos())
 			ground.waterSoil()
 			plantPumpkin()
-		def doRow():
-			movement.actMoveAct(storeGrowingPumpkins, get_world_size(), North)
-		movement.actMoveAct(doRow, rowsPerDrone, East)
+		movement.toPos(c1)
+		north=True
+		for _ in range(width - 1):
+			movement.actMoveAct(storeGrowingPumpkins, height, Utils.ternary(north, North, South))
+			north=not north
+			move(East)
+		movement.actMoveAct(storeGrowingPumpkins, height, Utils.ternary(north, North, South))
 		while len(notFullyGrown) > 0:
 			movement.toPos(notFullyGrown.pop(0))
 			storeGrowingPumpkins()
-	Defer.spawnMoveAct(babysit, dronesNeeded, East, rowsPerDrone)
+	manageRegion((0,0), (get_world_size(), get_world_size()))
+	Defer.joinAll()
 def plantPumpkin():
 	if get_entity_type() == Entities.Pumpkin:
 		return
