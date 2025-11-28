@@ -39,12 +39,16 @@ def toCorner(c1, c2, action):
 	if get_pos_x() == x1:
 		toPos(c1)
 		return
-	y2e=c2[1] - 1
 	goNorth=(x1 + get_pos_x()) % 2 == 0
-	direction=Utils.ternary(goNorth, North, South)
-	while get_pos_y() not in [c1[1], y2e]:
-		move(direction)
-		action()
+	if goNorth:
+		y2e=c2[1] - 1
+		while get_pos_y() != y2e:
+			move(North)
+			action()
+	else:
+		while get_pos_y() != c1[1]:
+			move(South)
+			action()
 	while get_pos_x() != c2[0] - 1:
 		move(East)
 		goNorth=not goNorth

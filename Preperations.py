@@ -22,7 +22,7 @@ def expectedTilesNeeded(item, unlock, amount, polyculture, baseYieldPerTile=1):
 	if polyculture:
 		expectedYieldWithBonus*=(5*2**polyculture)*0.5
 	return tiles / expectedYieldWithBonus
-def workForSeeds(cost, tiles, orders, indent, margin=1):
+def workForSeeds(cost, tiles, orders, indent, margin):
 	amountOfSeeds=max(1, tiles*margin)
 	if amountOfSeeds <= 0:
 		return False
