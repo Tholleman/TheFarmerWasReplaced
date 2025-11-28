@@ -1,3 +1,4 @@
+import Utils
 import movement
 
 def defer(action):
@@ -62,5 +63,26 @@ def dronesNeeded(tiles):
 	dronesNeeded=max(min(tiles/get_world_size(), get_world_size(), max_drones()), 1)
 	tilesPerDrone=tiles/dronesNeeded
 	return dronesNeeded, tilesPerDrone
-if __name__ == "__main__":
-	everyTile(till)
+# Returns the new corner1
+# The action must take 2 arguments, the bottom left corner (incl) and the top right corner (excl)
+# Example:
+# def action(c1, c2):
+# 	c1=Defer.splitRegion(c1, c2, action)
+# 	movement.toRegion(c1, c2)
+# action((0,0), (get_world_size(), get_world_size()))
+def splitRegion(corner1, corner2, action):
+	sizes=(corner2[0] - corner1[0], corner2[1] - corner1[1])
+	changeI=Utils.ternary(sizes[0] > sizes[1], 0, 1)
+	if sizes[changeI] == 1:
+		return corner1
+	unchangedI=(changeI + 1) % 2
+	half=corner1[changeI] + sizes[changeI] // 2
+	def makeCorner(other):
+		if changeI == 0:
+			return (half, other)
+		return (other, half)
+	def passCorner():
+		action(corner1, makeCorner(corner2[unchangedI]))
+	if spawn_drone(passCorner):
+		return splitRegion(makeCorner(corner1[unchangedI]), corner2, action)
+	return corner1

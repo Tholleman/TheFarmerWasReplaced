@@ -46,7 +46,7 @@ def weirdSubstancePatch():
 	drownHarvest()
 	plantCarrot()
 	move(East)
-	if get_pos_x() != 0:
+	if get_pos_y() != 0:
 		move(South)
 		drownHarvest()
 		plantCarrot()

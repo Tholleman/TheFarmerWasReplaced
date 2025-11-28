@@ -11,15 +11,13 @@ def harvestCheck():
 	return get_entity_type() in [None, Entities.Grass]
 def forceHarvestNoFertilizer():
 	while not harvestCheck():
-		if get_ground_type() == Grounds.Soil:
-			ground.waterSoil()
+		ground.waterSoil()
 def forceHarvestWithFertilizer():
 	while not harvestCheck():
 		if get_entity_type() == Entities.Tree:
 			spamFertilizer()
 			return
-		elif get_ground_type() == Grounds.Soil:
-			ground.waterSoil()
+		ground.waterSoil()
 def forceHarvest():
 	Globals.REPLACABLE_FUNCTIONS["forceHarvest"]()
 def onlyKeep(wanted):
@@ -29,8 +27,7 @@ def onlyKeep(wanted):
 def spamFertilizer():
 	while not harvestCheck():
 		use_item(Items.Fertilizer)
-		if get_ground_type() == Grounds.Soil:
-			ground.waterSoil()
+		ground.waterSoil()
 def spamWater():
 	while not harvestCheck():
 		ground.waterSoil(0.75)
@@ -39,13 +36,15 @@ def clearHarvest(wanted):
 		forceHarvestNoFertilizer()
 	else:
 		spamFertilizer()
-def companionCheck(wanted):
+def companionCheck(wanted, visited=set()):
 	if num_unlocked(Unlocks.Polyculture) == 0:
 		return False
 	# if num_items(Items.Fertilizer) == 0:
 	# 	return False
 	companion = get_companion()
 	if companion == None:
+		return False
+	if companion[1] in visited:
 		return False
 	requiredCompanionGround=getRequiredCompanionGround(companion[0])
 	if requiredCompanionGround != None and requiredCompanionGround != get_ground_type():
@@ -55,7 +54,12 @@ def companionCheck(wanted):
 	previous=movement.getPos()
 	movement.toCoordinates(companion[1][0], companion[1][1])
 	if get_entity_type() != companion[0]:
-		clearHarvest(wanted)
+		if get_entity_type() in wanted:
+			visited.add(previous)
+			companionCheck(wanted, visited)
+			forceHarvest()
+		else:
+			spamFertilizer()
 		if not plant(companion[0]):
 			movement.toCoordinates(previous[0],previous[1])
 			return False

@@ -5,7 +5,6 @@ import UnlockHelper
 import ground
 import Harvesting
 import Globals
-import movement
 
 def harvestHay(amount, currentlyUnlocking, indent):
 	if num_items(Items.Hay) >= amount:

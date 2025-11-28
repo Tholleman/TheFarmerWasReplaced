@@ -19,7 +19,7 @@ def prepareGround(type, afterTilling):
 		return True
 	Defer.everyTile(prepareTile)
 	return True
-def waterSoil(level=Globals.GLOBALS["MINIMUM_WATER"]):
+def waterSoil(level=0.75):
 	if get_water() < level or (get_entity_type() == Entities.Tree and get_water() < 0.75):
 		use_item(Items.Water)
 
