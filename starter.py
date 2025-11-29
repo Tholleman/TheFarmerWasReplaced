@@ -62,7 +62,8 @@ def benchmark(expected, file, items, args, expansion, unlocks={}, locks=[], amou
 # benchmark(38.1, "Carrot", {Items.Power:999999}, {"goal":100, "prepareTill": False, "delta": 0.2}, 4, {Unlocks.Carrots: 1, Unlocks.Grass: 1, Unlocks.Trees: 1}, [Unlocks.Polyculture, Unlocks.Megafarm], 10)
 # benchmark(47.1, "Carrot", {Items.Power:999999999, Items.Hay:12500000, Items.Wood: 12500000}, {"goal":99999999, "prepareTill": False, "delta": 0.5}, 9, {}, [], 10)
 
-# benchmark(48.63, "power", {Items.Carrot:2048}, {"goal":10000}, 9, {}, [], 5)
+# benchmark(101.8, "power", {Items.Carrot:5000}, {"goal":1000}, 6, {}, [Unlocks.Megafarm], 5)
+# benchmark(65.7, "power", {Items.Carrot:5000}, {"goal":10000}, 9, {}, [], 5)
 
 # benchmark(33.1, "pumpkin", {Items.Power:999999999,Items.Carrot:999999999}, {"goal":1080}, 4, {Unlocks.Pumpkins: 1}, [Unlocks.Megafarm], 10)
 # quick_print("Recover")
@@ -84,4 +85,4 @@ def benchmark(expected, file, items, args, expansion, unlocks={}, locks=[], amou
 # benchmark("138.21", "Dinosaur", {Items.Cactus: 999999999}, {"goal": 1000}, 6)
 # benchmark("1865.85", "Dinosaur", {Items.Cactus: 999999999}, {"goal": 1000}, 9)
 
-benchmark(5398, "Main", {}, {}, 0, {}, Unlocks, 5)
+benchmark(5375, "Main", {}, {}, 0, {}, Unlocks, 5)

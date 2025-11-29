@@ -19,9 +19,12 @@ def actMoveAct(action, count, direction):
 		action()
 		move(direction)
 	action()
+
+def isWithin(pos, c1, c2):
+	return c1[0] <= pos[0] < c2[0] and c1[1] <= pos[1] < c2[1]
 def toRegion(c1, c2):
 	def toAxis(self, p1, m1, p2, m2):
-		if self >= p1 and self < p2:
+		if p1 <= self < p2:
 			return
 		m1Moves=p1 - (self - get_world_size() * (self >= p1))
 		m2Moves=(self + get_world_size() * (self < p2)) - p2 + 1

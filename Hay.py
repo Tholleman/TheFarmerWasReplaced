@@ -16,13 +16,12 @@ def harvestHay(amount, currentlyUnlocking, indent):
 	tiles=Preperations.preperations(Items.Hay, calculateTilesNeeded, [Items.Power], currentlyUnlocking, indent)
 	if num_items(Items.Hay) >= amount:
 		return
-	dronesNeeded, _=Defer.dronesNeeded(tiles)
 	quick_print(indent, amount, "Hay using ~" + str(tiles), "tiles")
 	def behaviour():
 		while num_items(Items.Hay) < amount:
 			plantHay()
 			move(North)
-	Defer.spawnMoveAct(behaviour, dronesNeeded, East)
+	Defer.spawnMoveAct(behaviour, min(get_world_size(), max_drones()), East)
 def plantHay():
 	while not ((can_harvest() and harvest()) or get_entity_type() == None):
 		move(North)

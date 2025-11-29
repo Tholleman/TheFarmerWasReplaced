@@ -16,7 +16,7 @@ def harvestPumpkin(amount, currentlyUnlocking, indent):
 	UnlockHelper.workToUnlock(Unlocks.Pumpkins, currentlyUnlocking, "  " + indent)
 	def calculateTilesNeeded():
 		tiles=Preperations.expectedTilesNeeded(Items.Pumpkin, Unlocks.Pumpkins, amount, False, min(get_world_size(), 6))
-		return (-tiles // Globals.GLOBALS["AREA"]) * -Globals.GLOBALS["AREA"]
+		return Utils.roundTo(tiles, Globals.GLOBALS["AREA"])
 	while num_items(Items.Pumpkin) < amount:
 		tiles=Preperations.preperations(Items.Pumpkin, calculateTilesNeeded, [Items.Power], currentlyUnlocking, indent, 1.2)
 		quick_print(indent, amount, "Pumpkin using", tiles / Globals.GLOBALS["AREA"], "fields")
@@ -28,8 +28,7 @@ def plantFieldFullOfPumpkins():
 		Defer.everyTile(plantPumpkin)
 	def manageRegion(c1, c2):
 		c1=Defer.splitRegion(c1, c2, manageRegion)
-		width=c2[0] - c1[0]
-		height=c2[1] - c1[1]
+		width, height=Utils.dimensions(c1, c2)
 		notFullyGrown=[]
 		def storeGrowingPumpkins():
 			if get_entity_type() == Entities.Pumpkin and can_harvest():

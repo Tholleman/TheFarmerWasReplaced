@@ -27,8 +27,7 @@ def harvestWood(amount, currentlyUnlocking, indent):
 	quick_print(indent, amount, "Wood using ~" + str(tiles), "tiles")
 	def manageRegion(c1, c2):
 		c1=Defer.splitRegion(c1, c2, manageRegion)
-		width=c2[0] - c1[0]
-		height=c2[1] - c1[1]
+		width, height=Utils.dimensions(c1, c2)
 		while num_items(Items.Wood) < amount:
 			movement.toCorner(c1, c2, woodStrategyTree)
 			north=True
