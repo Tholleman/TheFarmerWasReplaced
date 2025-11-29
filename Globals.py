@@ -67,6 +67,20 @@ ITEM_EFFORT={
 	Items.Cactus:3,
 	Items.Bone:4
 }
+# powerStart=num_items(Items.Power)
+# ...
+# quick_print((powerStart - num_items(Items.Power)) / tiles)
+POWER_USAGE_PER_TILE={
+	Items.Hay: 0.3,
+	Items.Wood: 0.45,
+	Items.Carrot:0.5,
+	Items.Pumpkin:0.3,
+	Items.Power:0,
+	Items.Weird_Substance:0.01,
+	Items.Gold:23,
+	Items.Cactus:1.15,
+	Items.Bone:0.95
+}
 ITEM_TO_FUNCTION={}
 ITEM_TO_ENTITY={
 	Items.Hay: Entities.Grass,

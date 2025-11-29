@@ -49,7 +49,7 @@ def prepareItems(fullMaze, currentlyUnlocking, indent):
 	substanceNeeded=fullMaze * get_world_size() * 2**(num_unlocked(Unlocks.Mazes)-1)
 	while True:
 		harvestWeirdSubstance(substanceNeeded, currentlyUnlocking, indent)
-		if not workForPower(fullMaze * get_world_size(), currentlyUnlocking, indent):
+		if not workForPower(Items.Gold, fullMaze, currentlyUnlocking, indent):
 			break
 def createMaze():
 	Harvesting.forceHarvest()

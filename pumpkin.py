@@ -18,7 +18,7 @@ def harvestPumpkin(amount, currentlyUnlocking, indent):
 		tiles=Preperations.expectedTilesNeeded(Items.Pumpkin, Unlocks.Pumpkins, amount, False, min(get_world_size(), 6))
 		return Utils.roundTo(tiles, Globals.GLOBALS["AREA"])
 	while num_items(Items.Pumpkin) < amount:
-		tiles=Preperations.preperations(Items.Pumpkin, calculateTilesNeeded, [Items.Power], currentlyUnlocking, indent, 1.2)
+		tiles=Preperations.preperations(Items.Pumpkin, calculateTilesNeeded, currentlyUnlocking, indent, 1.2)
 		quick_print(indent, amount, "Pumpkin using", tiles / Globals.GLOBALS["AREA"], "fields")
 		for _ in range(0, tiles, Globals.GLOBALS["AREA"]):
 			plantFieldFullOfPumpkins()

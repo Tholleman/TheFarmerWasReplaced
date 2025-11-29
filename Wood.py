@@ -23,21 +23,15 @@ def harvestWood(amount, currentlyUnlocking, indent):
 	else:
 		def calculateTilesNeeded():
 			return Preperations.expectedTilesNeeded(Items.Wood, Unlocks.Trees, amount, False)
-	tiles=Preperations.preperations(Items.Wood, calculateTilesNeeded, [Items.Power], currentlyUnlocking, indent)
+	tiles=Preperations.preperations(Items.Wood, calculateTilesNeeded, currentlyUnlocking, indent)
 	quick_print(indent, amount, "Wood using ~" + str(tiles), "tiles")
+	def belowAmount():
+		return num_items(Items.Wood) < amount
 	def manageRegion(c1, c2):
 		c1=Defer.splitRegion(c1, c2, manageRegion)
-		width, height=Utils.dimensions(c1, c2)
+		movement.toCorner(c1, c2, woodStrategyTree)
 		while num_items(Items.Wood) < amount:
-			movement.toCorner(c1, c2, woodStrategyTree)
-			north=True
-			for _ in range(width - 1):
-				movement.actMoveAct(woodStrategyTree, height, Utils.ternary(north, North, South))
-				if num_items(Items.Wood) >= amount:
-					return
-				north=not north
-				move(East)
-			movement.actMoveAct(woodStrategyTree, height, Utils.ternary(north, North, South))
+			movement.snakeActCheck(woodStrategyTree, c1, c2, belowAmount)
 	topRight=(Utils.ternary(num_unlocked(Unlocks.Expand) > 1, get_world_size(), 1), get_world_size())
 	if tiles < get_world_size() ** 2:
 		topRight=(max(1, tiles // get_world_size()), get_world_size())

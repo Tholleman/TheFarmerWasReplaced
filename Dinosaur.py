@@ -3,6 +3,7 @@ import Globals
 import Harvesting
 import UnlockHelper
 import Preperations
+import Utils
 
 def harvestBones(amount, currentlyUnlocking, indent):
 	if num_items(Items.Bone) > amount:
@@ -11,9 +12,9 @@ def harvestBones(amount, currentlyUnlocking, indent):
 	UnlockHelper.workToUnlock(Unlocks.Dinosaurs, currentlyUnlocking, "  " + indent)
 	def calculateTilesNeeded():
 		tiles=Preperations.expectedTilesNeeded(Items.Bone, Unlocks.Dinosaurs, amount, False, Globals.GLOBALS["AREA"]-1)
-		return tiles + Globals.GLOBALS["AREA"] - (tiles % Globals.GLOBALS["AREA"])
+		return Utils.roundTo(tiles, Globals.GLOBALS["AREA"])
 	while num_items(Items.Bone) < amount:
-		tiles=Preperations.preperations(Items.Bone, calculateTilesNeeded, [Items.power], currentlyUnlocking, indent)
+		tiles=Preperations.preperations(Items.Bone, calculateTilesNeeded, currentlyUnlocking, indent)
 		quick_print(indent, amount, "Bones using", tiles / Globals.GLOBALS["AREA"], "fields")
 		Defer.everyTile(Harvesting.forceHarvest)
 		for _ in range(0, tiles, Globals.GLOBALS["AREA"]):

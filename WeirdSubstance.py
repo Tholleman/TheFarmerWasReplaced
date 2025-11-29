@@ -12,17 +12,16 @@ def harvestWeirdSubstance(amount, currentlyUnlocking, indent):
 		return
 	quick_print(indent, amount, "Weird Substance")
 	def calculateTilesNeeded():
-		return Preperations.expectedTilesNeeded(Items.Weird_Substance, Unlocks.Loops, amount, False, 1)
+		return Preperations.expectedTilesNeeded(Items.Weird_Substance, Unlocks.Trees, amount, False, 3.5)
 	ground.onlyPrepareGround(Grounds.Soil)
 	ensureOneWeirdSubstance()
 	while num_items(Items.Weird_Substance) < amount:
-		Preperations.workForPower(calculateTilesNeeded(), currentlyUnlocking, indent)
+		Preperations.preperations(Items.Weird_Substance, calculateTilesNeeded, currentlyUnlocking, indent)
 		def behaviour():
 			while num_items(Items.Weird_Substance) < amount:
 				weirdSubstancePatch()
 				move(North)
 				move(North)
-		
 		movement.toCoordinates(0, 1)
 		while spawn_drone(behaviour) and num_items(Items.Weird_Substance) < amount:
 			move(East)
@@ -33,7 +32,6 @@ def harvestWeirdSubstance(amount, currentlyUnlocking, indent):
 				movement.toCoordinates(0, 1)
 		behaviour()
 		Defer.joinAll()
-	return
 def ensureOneWeirdSubstance():
 	if num_items(Items.Weird_Substance) == 0:
 		Harvesting.forceHarvest()

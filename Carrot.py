@@ -13,10 +13,9 @@ def harvestCarrot(amount, currentlyUnlocking, indent):
 		return
 	quick_print(indent, amount, "Carrot")
 	UnlockHelper.workToUnlock(Unlocks.Carrots, currentlyUnlocking, "  " + indent)
-	requirements=[Items.Power]
 	def calculateTilesNeeded():
 		return Preperations.expectedTilesNeeded(Items.Carrot, Unlocks.Carrots, amount, num_unlocked(Unlocks.Polyculture), 1)
-	tiles=Preperations.preperations(Items.Carrot, calculateTilesNeeded, requirements, currentlyUnlocking, indent)
+	tiles=Preperations.preperations(Items.Carrot, calculateTilesNeeded, currentlyUnlocking, indent)
 	if num_items(Items.Carrot) >= amount:
 		return
 	quick_print(indent, amount, "Carrot using ~" + str(tiles), "tiles")

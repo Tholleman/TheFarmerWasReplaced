@@ -18,12 +18,12 @@ def harvestPower(amount, currentlyUnlocking, indent):
 	smallestRegionArea=getSmallestRegionArea(regions)
 	def calculateTilesNeeded():
 		tiles=Preperations.expectedTilesNeeded(Items.Power, Unlocks.Sunflowers, amount, False, (5-10/get_world_size()**2)*0.9)
-		if tiles < totalArea:
+		if tiles < totalArea and get_ground_type() != Grounds.Soil:
 			return totalArea
 		return Utils.roundTo(tiles, smallestRegionArea)
 	replaceWith=Preperations.lowestSimplePlant(currentlyUnlocking)
 	while num_items(Items.Power) < amount:
-		tiles=Preperations.preperations(Items.Power, calculateTilesNeeded, [], currentlyUnlocking, indent)
+		tiles=Preperations.preperations(Items.Power, calculateTilesNeeded, currentlyUnlocking, indent)
 		quick_print(indent, amount, "Power using", tiles / totalArea, "fields")
 		for completed in range(0, tiles, totalArea):
 			subregion=regions
@@ -72,8 +72,6 @@ def plantField(regions):
 		map[c1]=result
 	return map
 def fillRegion(region):
-	movement.toPos(region[0])
-	width, height=Utils.dimensions(region[0], region[1])
 	planted=[[],[],[],[],[],[],[],[],[]]
 	def plantSunflower():
 		if get_ground_type() != Grounds.Soil:
@@ -85,12 +83,7 @@ def fillRegion(region):
 				ground.waterSoil()
 		else:
 			Carrot.simplePlantCarrot()
-	north=True
-	for _ in range(width - 1):
-		movement.actMoveAct(plantSunflower, height, Utils.ternary(north, North, South))
-		north=not north
-		move(East)
-	movement.actMoveAct(plantSunflower, height, Utils.ternary(north, North, South))
+	movement.snakeAct(plantSunflower, region[0], region[1])
 	return planted
 def harvestField(regions, map, replaceWith):
 	previousDrones=[]

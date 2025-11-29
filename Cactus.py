@@ -1,8 +1,10 @@
+import Debug
 import Defer
 import UnlockHelper
 import Preperations
 import Globals
 import Harvesting
+import Utils
 import movement
 import ground
 
@@ -13,9 +15,9 @@ def harvestCactus(amount, currentlyUnlocking, indent):
 	UnlockHelper.workToUnlock(Unlocks.Cactus, currentlyUnlocking, "  " + indent)
 	def calculateTilesNeeded():
 		tiles=Preperations.expectedTilesNeeded(Items.Cactus, Unlocks.Cactus, amount, False, Globals.GLOBALS["AREA"])
-		return tiles + Globals.GLOBALS["AREA"] - (tiles % Globals.GLOBALS["AREA"])
+		return Utils.roundTo(tiles, Globals.GLOBALS["AREA"])
 	while num_items(Items.Cactus) < amount:
-		tiles=Preperations.preperations(Items.Cactus, calculateTilesNeeded, [Items.Power], currentlyUnlocking, indent)
+		tiles=Preperations.preperations(Items.Cactus, calculateTilesNeeded, currentlyUnlocking, indent)
 		ground.onlyPrepareGround(Grounds.Soil)
 		quick_print(indent, amount, "Cactus using", tiles / Globals.GLOBALS["AREA"], "fields")
 		for _ in range(0, tiles, Globals.GLOBALS["AREA"]):
@@ -82,6 +84,4 @@ def printCactus():
 Globals.ITEM_TO_FUNCTION[Items.Cactus]=harvestCactus
 
 if __name__ == "__main__":
-	Globals.SETUP_FUNCTION_MAPS()
-	harvestCactus(goal, [Unlocks.Cactus], "")
-	quick_print(num_items(Items.Cactus))
+	Debug.startBenchmark(Items.Cactus, goal)

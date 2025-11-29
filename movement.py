@@ -19,7 +19,26 @@ def actMoveAct(action, count, direction):
 		action()
 		move(direction)
 	action()
-
+def snakeAct(action, c1, c2):
+	toPos(c1)
+	width, height=Utils.dimensions(c1, c2)
+	goNorth=True
+	for _ in range(width - 1):
+		actMoveAct(action, height, Utils.ternary(goNorth, North, South))
+		goNorth=not goNorth
+		move(East)
+	actMoveAct(action, height, Utils.ternary(goNorth, North, South))
+def snakeActCheck(action, c1, c2, predicate):
+	toPos(c1)
+	width, height=Utils.dimensions(c1, c2)
+	goNorth=True
+	for _ in range(width - 1):
+		actMoveAct(action, height, Utils.ternary(goNorth, North, South))
+		if not predicate():
+			return
+		goNorth=not goNorth
+		move(East)
+	actMoveAct(action, height, Utils.ternary(goNorth, North, South))
 def isWithin(pos, c1, c2):
 	return c1[0] <= pos[0] < c2[0] and c1[1] <= pos[1] < c2[1]
 def toRegion(c1, c2):

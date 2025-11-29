@@ -13,7 +13,7 @@ def harvestHay(amount, currentlyUnlocking, indent):
 	UnlockHelper.workToUnlock(Unlocks.Grass, currentlyUnlocking, "  " + indent)
 	def calculateTilesNeeded():
 		return Preperations.expectedTilesNeeded(Items.Hay, Unlocks.Grass, amount, num_unlocked(Unlocks.Polyculture))
-	tiles=Preperations.preperations(Items.Hay, calculateTilesNeeded, [Items.Power], currentlyUnlocking, indent)
+	tiles=Preperations.preperations(Items.Hay, calculateTilesNeeded, currentlyUnlocking, indent)
 	if num_items(Items.Hay) >= amount:
 		return
 	quick_print(indent, amount, "Hay using ~" + str(tiles), "tiles")

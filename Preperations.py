@@ -2,16 +2,15 @@ import Globals
 import power
 
 
-def preperations(item, calculateTilesNeeded, requirements, currentlyUnlocking, indent, seedsMargin=1):
+def preperations(item, calculateTilesNeeded, currentlyUnlocking, indent, seedsMargin=1):
 	tiles=calculateTilesNeeded()
 	oldTiles=-1
 	cost=get_cost(Globals.ITEM_TO_ENTITY[item])
 	indent+="  "
 	while tiles != oldTiles:
 		oldTiles=tiles
-		if Items.Power in requirements:
-			if workForPower(tiles, currentlyUnlocking, indent):
-				tiles=calculateTilesNeeded()
+		if workForPower(item, tiles, currentlyUnlocking, indent):
+			tiles=calculateTilesNeeded()
 		if len(cost) != 0:
 			if workForSeeds(cost, tiles, currentlyUnlocking, indent, seedsMargin):
 				tiles=calculateTilesNeeded()
@@ -41,13 +40,11 @@ def workForSeeds(cost, tiles, orders, indent, margin):
 				didWork=True
 				allInStock=False
 	return didWork
-def workForPower(tiles, currentlyUnlocking, indent):
+def workForPower(item, tiles, currentlyUnlocking, indent):
 	if num_unlocked(Unlocks.Sunflowers) == 0:
 		return False
-	if tiles <= Globals.GLOBALS["AREA"]:
-		return False
-	powerNeeded=tiles*0.05
-	if num_items(Items.Power) >= powerNeeded//1:
+	powerNeeded=tiles*Globals.POWER_USAGE_PER_TILE[item]
+	if num_items(Items.Power) >= powerNeeded:
 		return False
 	power.harvestPower(powerNeeded, currentlyUnlocking, indent)
 	return True
