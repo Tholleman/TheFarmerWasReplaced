@@ -42,7 +42,8 @@ def harvestCarrot(amount, currentlyUnlocking, indent):
 def plantCarrot():
 	if get_entity_type() == Entities.Carrot:
 		Harvesting.companionCheck([Entities.Carrot])
-	Harvesting.clearHarvest([Entities.Carrot])
+	if not Harvesting.harvestCheck():
+		return
 	simplePlantCarrot()
 	ground.waterSoil()
 def simplePlantCarrot():

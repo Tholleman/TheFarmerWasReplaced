@@ -1,7 +1,7 @@
 import Debug
 import Globals
 
-speed=1
+speed=100
 
 def benchmark(expected, file, items, args, expansion, unlocks={}, locks=[], amount=10, seedStart=0):
 	unlockOverride={}
@@ -85,4 +85,4 @@ def benchmark(expected, file, items, args, expansion, unlocks={}, locks=[], amou
 # benchmark("138.21", "Dinosaur", {Items.Cactus: 999999999}, {"goal": 1000}, 6)
 # benchmark(937.2, "Dinosaur", {Items.Cactus: 999999999, Items.Power: 999999999}, {"goal": 1000}, 9)
 
-benchmark(5375, "Main", {}, {}, 0, {}, Unlocks, 5)
+benchmark(5257.9, "Main", {}, {}, 0, {}, Unlocks, 5)

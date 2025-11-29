@@ -77,7 +77,7 @@ POWER_USAGE_PER_TILE={
 	Items.Pumpkin:0.3,
 	Items.Power:0,
 	Items.Weird_Substance:0.01,
-	Items.Gold:23,
+	Items.Gold:0.02,
 	Items.Cactus:1.15,
 	Items.Bone:0.95
 }

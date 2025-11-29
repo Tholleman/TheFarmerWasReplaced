@@ -43,7 +43,8 @@ def woodStrategyTree():
 			ground.waterSoil(0.75)
 			return
 		Harvesting.companionCheck([Entities.Bush, Entities.Tree])
-	Harvesting.clearHarvest([Entities.Tree, Entities.Bush])
+	if not Harvesting.harvestCheck():
+		return
 	if canPlantTree():
 		plant(Entities.Tree)
 		ground.waterSoil(0.75)

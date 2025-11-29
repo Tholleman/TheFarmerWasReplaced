@@ -2,7 +2,7 @@ import Debug
 import Defer
 import Globals
 import Harvesting
-from Preperations import workForPower
+import Preperations
 import UnlockHelper
 from WeirdSubstance import harvestWeirdSubstance
 import mazeExplorer
@@ -47,9 +47,10 @@ def harvestGold(amount, currentlyUnlocking, indent):
 def prepareItems(fullMaze, currentlyUnlocking, indent):
 	indent+="  "
 	substanceNeeded=fullMaze * get_world_size() * 2**(num_unlocked(Unlocks.Mazes)-1)
+	Preperations.orderPowerNeeded(Items.Gold, fullMaze * get_world_size()**2, currentlyUnlocking)
 	while True:
 		harvestWeirdSubstance(substanceNeeded, currentlyUnlocking, indent)
-		if not workForPower(Items.Gold, fullMaze, currentlyUnlocking, indent):
+		if not Preperations.workForPower(currentlyUnlocking, indent):
 			break
 def createMaze():
 	Harvesting.forceHarvest()

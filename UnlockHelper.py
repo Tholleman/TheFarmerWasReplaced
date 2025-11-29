@@ -19,7 +19,7 @@ def workToUnlock(toUnlock, orders={"currentlyUnlocking":[],"items":{}}, indent="
 	quick_print(indent, toUnlock, num_unlocked(toUnlock) + 1, "/", Globals.UNLOCKS[toUnlock], "(", getEffort(toUnlock), ")")
 	while not unlock(toUnlock):
 		for item in cost:
-			quick_print(indent, "-", cost[item], item)
+			# quick_print(indent, "-", cost[item], item)
 			if item in orders["items"]:
 				orders["items"][item]+=cost[item]
 			else:
@@ -32,7 +32,7 @@ def workToUnlock(toUnlock, orders={"currentlyUnlocking":[],"items":{}}, indent="
 	orders["currentlyUnlocking"].pop()
 	afterUnlockActions(toUnlock)
 	Globals.UNLOCK_EFFORT.pop(toUnlock)
-	if toUnlock in [Unlocks.Speed, Unlocks.Expand, Unlocks.Watering, Unlocks.Fertilizer, Unlocks.Megafarm]:
+	if toUnlock in UnlocksPath.REPEATABLE:
 		if UnlocksPath.addToUnavailable(toUnlock, get_cost(toUnlock)):
 			Globals.AVAILABLE_UNLOCKS.remove(toUnlock)
 	elif toUnlock in Globals.AVAILABLE_UNLOCKS:

@@ -16,7 +16,8 @@ def harvestWeirdSubstance(amount, currentlyUnlocking, indent):
 	ground.onlyPrepareGround(Grounds.Soil)
 	ensureOneWeirdSubstance()
 	while num_items(Items.Weird_Substance) < amount:
-		Preperations.preperations(Items.Weird_Substance, calculateTilesNeeded, currentlyUnlocking, indent)
+		Preperations.orderPowerNeeded(Items.Weird_Substance, calculateTilesNeeded(), currentlyUnlocking)
+		Preperations.workForPower(currentlyUnlocking, indent)
 		def behaviour():
 			while num_items(Items.Weird_Substance) < amount:
 				weirdSubstancePatch()

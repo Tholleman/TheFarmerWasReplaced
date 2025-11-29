@@ -3,20 +3,6 @@ import UnlockHelper
 
 REPEATABLE=[Unlocks.Speed, Unlocks.Expand, Unlocks.Watering, Unlocks.Fertilizer, Unlocks.Megafarm]
 
-def getAvailableUnlocks():
-	result=[]
-	for unlock in Globals.UNLOCKS:
-		if num_unlocked(unlock) and unlock not in REPEATABLE:
-			continue
-		if itemsLocked(unlock):
-			continue
-		result.append(unlock)
-	return result
-def itemsLocked(unlock):
-	for item in get_cost(unlock):
-		if num_unlocked(item) == 0:
-			return True
-	return False
 def addToUnavailable(unlock, cost):
 	if unlock not in Globals.UNLOCKS:
 		if num_unlocked(unlock) == 0:
@@ -57,6 +43,8 @@ def afterUnlockDo(key, action):
 for unlock in Unlocks:
 	if not addToUnavailable(unlock, get_cost(unlock)):
 		Globals.AVAILABLE_UNLOCKS.append(unlock)
+if Unlocks.Grass in Globals.AVAILABLE_UNLOCKS:
+	Globals.AVAILABLE_UNLOCKS.remove(Unlocks.Grass)
 
 def clearAvailableUnlocks():
 	Globals.AVAILABLE_UNLOCKS=[]

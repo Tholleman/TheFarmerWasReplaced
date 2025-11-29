@@ -7,13 +7,14 @@ def preperations(item, calculateTilesNeeded, currentlyUnlocking, indent, seedsMa
 	oldTiles=-1
 	cost=get_cost(Globals.ITEM_TO_ENTITY[item])
 	indent+="  "
+	orderPowerNeeded(item, tiles, currentlyUnlocking)
 	while tiles != oldTiles:
 		oldTiles=tiles
-		if workForPower(item, tiles, currentlyUnlocking, indent):
-			tiles=calculateTilesNeeded()
 		if len(cost) != 0:
 			if workForSeeds(cost, tiles, currentlyUnlocking, indent, seedsMargin):
 				tiles=calculateTilesNeeded()
+		if workForPower(currentlyUnlocking, indent):
+			tiles=calculateTilesNeeded()
 	return tiles
 def expectedTilesNeeded(item, unlock, amount, polyculture, baseYieldPerTile=1):
 	tiles=amount - num_items(item)
@@ -40,14 +41,33 @@ def workForSeeds(cost, tiles, orders, indent, margin):
 				didWork=True
 				allInStock=False
 	return didWork
-def workForPower(item, tiles, currentlyUnlocking, indent):
+def workForPower(orders, indent):
 	if num_unlocked(Unlocks.Sunflowers) == 0:
 		return False
-	powerNeeded=tiles*Globals.POWER_USAGE_PER_TILE[item]
+	if Items.Power not in orders["items"]:
+		return False
+	if "HarvestingPower" in orders["items"]:
+		return False
+	powerNeeded=orders["items"][Items.Power]
 	if num_items(Items.Power) >= powerNeeded:
 		return False
-	power.harvestPower(powerNeeded, currentlyUnlocking, indent)
+	orders["items"]["HarvestingPower"]=True
+	power.harvestPower(powerNeeded, orders, indent)
+	orders["items"].pop(Items.Power)
+	orders["items"].pop("HarvestingPower")
 	return True
+def orderPowerNeeded(item, tiles, orders):
+	if num_unlocked(Unlocks.Sunflowers) == 0:
+		return
+	if "HarvestingPower" in orders["items"]:
+		return False
+	powerNeeded=tiles*Globals.POWER_USAGE_PER_TILE[item]
+	if powerNeeded <= 0:
+		return
+	if Items.Power in orders["items"]:
+		orders["items"][Items.Power]+=powerNeeded
+		return
+	orders["items"][Items.Power]=powerNeeded
 def lowestSimplePlant(orders, of = [Items.Hay, Items.Wood, Items.Carrot]):
 	if len(of) == 1:
 		return of[0]
