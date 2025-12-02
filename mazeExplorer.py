@@ -3,14 +3,13 @@ import MazeSolver
 from movement import *
 from MazeUtils import popSet, moveTreasure
 
-def exploreMaze():
+def exploreMaze(size):
 	log=createExplorer(None)()
-	tiles=initTiles()
+	tiles=initTiles(size)
 	while len(log["orphans"]):
 		mergeLog(log, wait_for(log["orphans"].pop(0)))
 		mapTiles(tiles, log)
 	mapTiles(tiles, log)
-	size=get_world_size()
 	for i in range(size):
 		tiles[0][i]["knownWalls"].remove(West)
 		tiles[size-1][i]["knownWalls"].remove(East)
@@ -28,13 +27,11 @@ def mapTiles(tiles, log):
 		added.add(key)
 	for pos in added:
 		log.pop(pos)
-def initTiles():
+def initTiles(size):
 	tiles=[]
-	size=get_world_size()
 	for _ in range(size):
 		column=[]
 		for _ in range(size):
-			# column.append({"untested":{North, East, South, West},"knownGood":set(),"knownWalls":set(),"origin":None})
 			column.append(None)
 		tiles.append(column)
 	tiles.append(set())

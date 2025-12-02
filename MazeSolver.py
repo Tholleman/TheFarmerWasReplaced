@@ -4,6 +4,7 @@ import Globals
 import Harvesting
 import Preperations
 import UnlockHelper
+import Utils
 from WeirdSubstance import harvestWeirdSubstance
 import mazeExplorer
 from MazeUtils import getTile, moveTreasure, nextCoordinates
@@ -36,97 +37,70 @@ def harvestGold(amount, currentlyUnlocking, indent):
 	quick_print(indent, amount, "Gold")
 	UnlockHelper.workToUnlock(Unlocks.Mazes, currentlyUnlocking, "  " + indent)
 	while num_items(Items.Gold) < amount:
-		fullMaze=300
-		prepareItems(fullMaze, currentlyUnlocking, indent)
+		size=calcSize(amount - num_items(Items.Gold))
+		prepareItems(size, currentlyUnlocking, indent)
 		if num_items(Items.Gold) >= amount:
 			return
-		quick_print(indent, fullMaze , "/", -(amount - num_items(Items.Gold)) // (Globals.GLOBALS["AREA"] * -num_unlocked(Unlocks.Mazes)), "treasure chests")
-		if not createMaze():
-			continue
-		solveMaze()
-def prepareItems(fullMaze, currentlyUnlocking, indent):
+		quick_print(indent, "301 *", str(size) + "x" + str(size), "maze for", amount - num_items(Items.Gold), "gold")
+		if createMaze(size):
+			solveMaze(size)
+		if size != get_world_size():
+			cleanup(size)
+def calcSize(required):
+	oneTreasure=2**(num_unlocked(Unlocks.Mazes)-1)
+	fullYield=301*oneTreasure
+	for size in range(get_world_size() - 1, 0, -1):
+		sizeYield=size ** 2 * fullYield
+		if sizeYield < required:
+			return size + 1
+	if required <= oneTreasure:
+		return 1
+	return 2
+def prepareItems(size, currentlyUnlocking, indent):
 	indent+="  "
-	substanceNeeded=fullMaze * get_world_size() * 2**(num_unlocked(Unlocks.Mazes)-1)
-	Preperations.orderPowerNeeded(Items.Gold, fullMaze * get_world_size()**2, currentlyUnlocking)
+	substanceNeeded=300 * size * 2**(num_unlocked(Unlocks.Mazes)-1)
+	harvestWeirdSubstance(substanceNeeded, currentlyUnlocking, indent)
 	while True:
-		harvestWeirdSubstance(substanceNeeded, currentlyUnlocking, indent)
+		Preperations.orderPowerNeeded(Items.Gold, 301 * size**2, currentlyUnlocking)
 		if not Preperations.workForPower(currentlyUnlocking, indent):
 			break
-def createMaze():
+def createMaze(size):
+	if size != get_world_size():
+		movement.toCoordinates(0, 0)
 	Harvesting.forceHarvest()
 	plant(Entities.Bush)
 	while get_entity_type() == Entities.Bush:
-		if not use_item(Items.Weird_Substance, get_world_size() * 2**(num_unlocked(Unlocks.Mazes)-1)):
+		if not use_item(Items.Weird_Substance, size * 2**(num_unlocked(Unlocks.Mazes)-1)):
 			return False
 	return True
-def solveMaze():
-	treasureMap=mazeExplorer.exploreMaze()
-	regionSize=calcRegionSize()
-	splitRegion(0, 0, get_world_size(), get_world_size(), regionSize, treasureMap, True)
-	Defer.joinAll()
-def calcRegionSize():
-	sqrt=1
-	if max_drones() > 1:
-		if max_drones() >= 36:
-			quick_print("WARNING: MORE DRONES THAN THOUGHT POSSIBLE")
-			sqrt=6
-		elif max_drones() >= 25:
-			sqrt=5
-		elif max_drones() >= 16:
-			sqrt=4
-		elif max_drones() >= 9:
-			sqrt=3
-		else:
-			sqrt=2
-	return get_world_size() // sqrt
-def splitRegion(x1, y1, x2, y2, size, treasureMap, exec=False):
-	def manage():
-		while split():
-			pass
-		moveToRegion(insideBounds, treasureMap)
-		while waitUntilInBounds():
+def solveMaze(size):
+	treasureMap=mazeExplorer.exploreMaze(size)
+	def manageRegion(c1, c2):
+		c1=Defer.splitRegion(c1, c2, manageRegion)
+		moveToRegion(c1, c2, treasureMap)
+		while waitUntilInBounds(c1, c2, treasureMap):
 			createInstructions(treasureMap)
 			folowInstructions(treasureMap)
 			if not moveTreasure():
 				harvest()
 				return
-	def split():
-		if x2 - x1 >= size * 2:
-			newX2=(x2 - x1) / 2 // size * size + x1
-			if splitRegion(x1, y1, newX2, y2, size, treasureMap):
-				global x1
-				x1=newX2
+	manageRegion((0, 0), (size, size))
+	Defer.joinAll()
+def waitUntilInBounds(c1, c2, treasureMap):
+	lastCheck=get_time()
+	while True:
+		pos=measure()
+		if get_entity_type() != Entities.Hedge:
+			if get_entity_type() == Entities.Treasure:
 				return True
 			return False
-		if y2 - y1 >= size * 2:
-			newY2=(y2 - y1) / 2 // size * size + y1
-			if splitRegion(x1, y1, x2, newY2, size, treasureMap):
-				global y1
-				y1=newY2
-				return True
-		return False
-	def waitUntilInBounds():
-		lastCheck=get_time()
-		while True:
-			pos=measure()
-			if get_entity_type() != Entities.Hedge:
-				if get_entity_type() == Entities.Treasure:
-					return True
-				return False
-			tx,ty=pos
-			treasureInBoundingBox=insideBounds(tx, ty)
-			if treasureInBoundingBox:
-				return True
-			if get_time() - lastCheck > 640 / get_world_size():
-				lastCheck=get_time()
-				if retestRegion(treasureMap, x1, y1, x2, y2, insideBounds):
-					lastCheck*=16
-	def insideBounds(x, y):
-		return x >= x1 and x < x2 and y >= y1 and y < y2
-	if exec:
-		manage()
-		return
-	return spawn_drone(manage)
+		treasureInBoundingBox=movement.isWithin(pos, c1, c2)
+		if treasureInBoundingBox:
+			return True
+		if get_time() - lastCheck > 640 / get_world_size():
+			lastCheck=get_time()
+			if retestRegion(treasureMap, c1, c2):
+				lastCheck*=16
 def createInstructions(tiles):
 	if get_entity_type() == Entities.Treasure:
 		return
@@ -199,9 +173,11 @@ def followReverseInstructions(tiles, treasureLocation, drawnOn):
 		direction=tiles[x][y]["origin"]
 	for direction in instructions[::-1]:
 		move(direction)
-def retestRegion(tiles, x1, y1, x2, y2, insideBounds):
-	if not insideBounds(get_pos_x(), get_pos_y()):
+def retestRegion(tiles, c1, c2):
+	if not movement.isWithin((get_pos_x(), get_pos_y()), c1, c2):
 		return
+	x1, y1=c1
+	x2, y2=c2
 	region=[]
 	for x in range(x1, x2):
 		row=[]
@@ -211,13 +187,12 @@ def retestRegion(tiles, x1, y1, x2, y2, insideBounds):
 	history=[]
 	visited=set()
 	while len(history) > 0 or len(region[get_pos_x()-x1][get_pos_y()-y1]):
-		pos=movement.getPos()
-		x,y=pos
+		x,y=movement.getPos()
 		if len(region[x-x1][y-y1]):
 			retestWalls(tiles, x, y)
 			direction=region[x-x1][y-y1].pop()
 			nx,ny=nextCoordinates(x,y,direction)
-			if not insideBounds(nx, ny):
+			if not movement.isWithin((nx, ny), c1, c2):
 				continue
 			if (nx, ny) in visited:
 				continue
@@ -231,7 +206,7 @@ def retestRegion(tiles, x1, y1, x2, y2, insideBounds):
 		treasurePosition=measure()
 		if treasurePosition == None or len(treasurePosition) != 2:
 			return False
-		if insideBounds(treasurePosition[0], treasurePosition[1]):
+		if movement.isWithin(treasurePosition, c1, c2):
 			resetOrigin(tiles, tiles[-1], {})
 			return False
 	resetOrigin(tiles, tiles[-1], {})
@@ -240,11 +215,10 @@ def retestRegion(tiles, x1, y1, x2, y2, insideBounds):
 			if len(tile):
 				return False
 	return True
-def moveToRegion(insideBounds, tiles):
-	if insideBounds(get_pos_x(), get_pos_y()):
+def moveToRegion(c1, c2, tiles):
+	if movement.isWithin((get_pos_x(), get_pos_y()), c1, c2):
 		return
-	tx,ty=measure()
-	if insideBounds(tx, ty):
+	if movement.isWithin(measure(), c1, c2):
 		return
 	queue=[(get_pos_x(), get_pos_y())]
 	drawnOn=set()
@@ -263,7 +237,7 @@ def moveToRegion(insideBounds, tiles):
 			nextTile=tiles[nextX][nextY]
 			nextTile["origin"]=direction
 			drawnOn.add(tuple)
-			if insideBounds(nextX, nextY):
+			if movement.isWithin(tuple, c1, c2):
 				instructions=[]
 				tile=tiles[nextX][nextY]
 				while tile["origin"] != None:
@@ -293,5 +267,21 @@ def printDirectionMap(tiles):
 				output.append("→")
 		quick_print(output)
 	quick_print("")
+def cleanup(size):
+	end=get_world_size() - 1
+	movement.toCoordinates(end, end)
+	if get_ground_type() != Grounds.Grassland:
+		move(North)
+		move(East)
+		direction=North
+		def tillMazeColumn():
+			movement.actMoveAct(till, size, direction)
+		def deferTill():
+			if not spawn_drone(tillMazeColumn):
+				tillMazeColumn()
+				global direction
+				direction=Utils.ternary(direction == North, South, North)
+		movement.actMoveAct(deferTill, size, East)
 if __name__ == "__main__":
+	Defer.everyTile(till)
 	Debug.startBenchmark(Items.Gold, goal, 0)

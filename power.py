@@ -20,7 +20,7 @@ def harvestPower(amount, currentlyUnlocking, indent):
 		tiles=Preperations.expectedTilesNeeded(Items.Power, Unlocks.Sunflowers, amount, False, (5-10/get_world_size()**2)*0.9)
 		if tiles < totalArea and get_ground_type() != Grounds.Soil:
 			return totalArea
-		return max(Utils.roundTo(tiles, smallestRegionArea), smallestRegionArea*4*(num_drones() > 4))
+		return Utils.roundTo(tiles, totalArea // 2)
 	replaceWith=Preperations.lowestSimplePlant(currentlyUnlocking)
 	while num_items(Items.Power) < amount:
 		tiles=Preperations.preperations(Items.Power, calculateTilesNeeded, currentlyUnlocking, indent)

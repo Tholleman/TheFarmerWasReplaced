@@ -24,16 +24,15 @@ def harvestCactus(amount, currentlyUnlocking, indent):
 			plantFieldFullOfCactus()
 def plantFieldFullOfCactus():
 	movement.toCoordinates(0, 0)
-	for _ in range(get_world_size()):
-		Defer.defer(plantColumn)
-		move(East)
-	Defer.joinAll()
-	for _ in range(get_world_size()):
-		Defer.defer(sortRow)
-		move(North)
-	Defer.joinAll()
+	for action, direction in [(plantColumn, East), (sortRow, North)]:
+		for i in range(get_world_size()):
+			if (i+1) % max_drones():
+				while num_drones() == max_drones() and max_drones() > 1:
+					pass
+			Defer.defer(action)
+			move(direction)
+		Defer.joinAll()
 	Harvesting.forceHarvest()
-	return True
 def plantColumn():
 	plantCactus()
 	for _ in range(get_world_size()-1):
@@ -84,4 +83,4 @@ def printCactus():
 Globals.ITEM_TO_FUNCTION[Items.Cactus]=harvestCactus
 
 if __name__ == "__main__":
-	Debug.startBenchmark(Items.Cactus, goal)
+	Debug.startBenchmark(Items.Cactus, goal, 0, prepareTill)

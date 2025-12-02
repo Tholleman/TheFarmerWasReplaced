@@ -9,6 +9,10 @@ clear()
 if num_unlocked(Unlocks.Top_Hat):
 	change_hat(Hats.Top_Hat)
 
+def farmItemsExact(item, amount):
+	emptyUnlock={"currentlyUnlocking":[Globals.ITEM_TO_UNLOCK[item]], "items":{}}
+	Globals.ITEM_TO_FUNCTION[item](amount + num_items(item), emptyUnlock, "")
+
 while len(Globals.AVAILABLE_UNLOCKS) > 0:
 	UnlockHelper.workToUnlock(UnlocksPath.getNextUnlock())
 

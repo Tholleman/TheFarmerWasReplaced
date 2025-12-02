@@ -4,7 +4,6 @@ import Globals
 import Harvesting
 import Preperations
 import UnlockHelper
-import Utils
 import ground
 import movement
 
@@ -20,20 +19,13 @@ def harvestCarrot(amount, currentlyUnlocking, indent):
 		return
 	quick_print(indent, amount, "Carrot using ~" + str(tiles), "tiles")
 	ground.prepareGround(Grounds.Soil, simplePlantCarrot)
+	def keepPlanting():
+		return num_items(Items.Carrot) < amount
 	def manageRegion(c1, c2):
 		c1=Defer.splitRegion(c1, c2, manageRegion)
-		width=c2[0] - c1[0]
-		height=c2[1] - c1[1]
+		movement.toCorner(c1, c2, plantCarrot)
 		while num_items(Items.Carrot) < amount:
-			movement.toCorner(c1, c2, plantCarrot)
-			north=True
-			for _ in range(width - 1):
-				movement.actMoveAct(plantCarrot, height, Utils.ternary(north, North, South))
-				if num_items(Items.Carrot) >= amount:
-					return
-				north=not north
-				move(East)
-			movement.actMoveAct(plantCarrot, height, Utils.ternary(north, North, South))
+			movement.snakeActCheck(plantCarrot, c1, c2, keepPlanting)
 	topRight=(get_world_size(), get_world_size())
 	if tiles < get_world_size() ** 2:
 		topRight=(max(1, tiles // get_world_size()), get_world_size())

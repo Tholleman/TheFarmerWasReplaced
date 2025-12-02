@@ -1,6 +1,9 @@
 import Globals
+import ground
 
-def startBenchmark(item, goal, delta=0):
+def startBenchmark(item, goal, delta=0, prepareTill=False):
+	if prepareTill:
+		ground.onlyPrepareGround(Grounds.Soil)
 	Globals.SETUP_FUNCTION_MAPS()
 	Globals.ITEM_TO_FUNCTION[item](goal, {"currentlyUnlocking":[Globals.ITEM_TO_UNLOCK[item]], "items":{}}, "")
 	if num_items(item) / goal > 1+delta:
