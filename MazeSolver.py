@@ -282,5 +282,6 @@ def cleanup(size):
 				global direction
 				direction=Utils.ternary(direction == North, South, North)
 		movement.actMoveAct(deferTill, size, East)
+		Defer.joinAll()
 if __name__ == "__main__":
 	Debug.startBenchmark(Items.Gold, goal, 0)

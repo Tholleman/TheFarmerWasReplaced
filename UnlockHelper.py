@@ -64,5 +64,5 @@ def afterUnlockActions(unlocked):
 			Globals.AFTER_UNLOCK[unlocked].remove(action)
 def getEffort(unlock):
 	if unlock not in Globals.UNLOCK_EFFORT:
-		Globals.UNLOCK_EFFORT[unlock]=UnlocksPath.calcEffort(unlock)
+		Globals.UNLOCK_EFFORT[unlock]=UnlocksPath.calcEffort(unlock, num_unlocked(unlock))
 	return Globals.UNLOCK_EFFORT[unlock]

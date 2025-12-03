@@ -52,15 +52,15 @@ def plantPumpkin():
 	if get_entity_type() == Entities.Pumpkin:
 		return
 	ground.waterSoil()
+	if get_entity_type() != Entities.Dead_Pumpkin:
+		Harvesting.spamFertilizer()
 	if not plant(Entities.Pumpkin):
-		if get_entity_type() != Entities.Dead_Pumpkin:
-			Harvesting.spamFertilizer()
 		plantRequirement()
 def plantRequirement():
 	cost=get_cost(Entities.Pumpkin)
 	for item in cost:
 		if num_items(item) < cost[item]:
 			Globals.ITEM_TO_SINGLE_PLANT[item]()
-
+			return
 if __name__ == "__main__":
 	Debug.startBenchmark(Items.Pumpkin, goal)

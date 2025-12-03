@@ -86,4 +86,6 @@ def benchmark(expected, file, items, args, expansion, unlocks={}, locks=[], amou
 # benchmark("138.21", "Dinosaur", {Items.Cactus: 999999999}, {"goal": 1000}, 6)
 # benchmark(937.2, "Dinosaur", {Items.Cactus: 999999999, Items.Power: 999999999}, {"goal": 1000}, 9)
 
+for _ in range(100):
+	quick_print("↓")
 benchmark(4879, "Main", {}, {}, 0, {}, Unlocks, 5)
