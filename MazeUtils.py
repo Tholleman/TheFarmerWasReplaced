@@ -1,5 +1,5 @@
-def moveTreasure():
-	return use_item(Items.Weird_Substance, get_world_size() * 2**(num_unlocked(Unlocks.Mazes)-1))
+def moveTreasure(size):
+	return use_item(Items.Weird_Substance, size * 2**(num_unlocked(Unlocks.Mazes)-1))
 def popSet(set):
 	for first in set:
 		set.remove(first)

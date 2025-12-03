@@ -1,7 +1,7 @@
 from Globals import REVERSE
 import MazeSolver
 from movement import *
-from MazeUtils import popSet, moveTreasure
+from MazeUtils import popSet
 
 def exploreMaze(size):
 	log=createExplorer(None)()

@@ -13,8 +13,9 @@ def farmItemsExact(item, amount):
 	emptyUnlock={"currentlyUnlocking":[Globals.ITEM_TO_UNLOCK[item]], "items":{}}
 	Globals.ITEM_TO_FUNCTION[item](amount + num_items(item), emptyUnlock, "")
 
-while len(Globals.AVAILABLE_UNLOCKS) > 0:
-	UnlockHelper.workToUnlock(UnlocksPath.getNextUnlock())
+path=UnlocksPath.calculatePath()
+while len(path):
+	UnlockHelper.unlockAll(path.pop(0))
 
 plants=[]
 for item in Globals.ITEM_TO_FUNCTION:

@@ -81,7 +81,7 @@ def solveMaze(size):
 		while waitUntilInBounds(c1, c2, treasureMap):
 			createInstructions(treasureMap)
 			folowInstructions(treasureMap)
-			if not moveTreasure():
+			if not moveTreasure(size):
 				harvest()
 				return
 	manageRegion((0, 0), (size, size))
@@ -283,5 +283,4 @@ def cleanup(size):
 				direction=Utils.ternary(direction == North, South, North)
 		movement.actMoveAct(deferTill, size, East)
 if __name__ == "__main__":
-	Defer.everyTile(till)
 	Debug.startBenchmark(Items.Gold, goal, 0)
