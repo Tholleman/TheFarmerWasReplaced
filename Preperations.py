@@ -17,11 +17,13 @@ def preperations(item, calculateTilesNeeded, currentlyUnlocking, indent, seedsMa
 			tiles=calculateTilesNeeded()
 	return tiles
 def expectedTilesNeeded(item, unlock, amount, polyculture, baseYieldPerTile=1):
-	tiles=amount - num_items(item)
-	expectedYieldWithBonus=max(1, 2**(num_unlocked(unlock)-1) * baseYieldPerTile)
+	missing=amount - num_items(item)
+	return missing / expectedYield(unlock, polyculture, baseYieldPerTile)
+def expectedYield(unlock, polyculture=0, baseYieldPerTile=1):
+	expectedYieldWithBonus=2**(num_unlocked(unlock)-1) * baseYieldPerTile
 	if polyculture:
 		expectedYieldWithBonus*=(5*2**polyculture)*0.5
-	return tiles / expectedYieldWithBonus
+	return expectedYieldWithBonus
 def workForSeeds(cost, tiles, orders, indent, margin):
 	amountOfSeeds=max(1, tiles*margin)
 	if amountOfSeeds <= 0:

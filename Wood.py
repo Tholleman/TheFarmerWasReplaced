@@ -34,7 +34,7 @@ def harvestWood(amount, currentlyUnlocking, indent):
 			movement.snakeActCheck(woodStrategyTree, c1, c2, belowAmount)
 	topRight=(Utils.ternary(num_unlocked(Unlocks.Expand) > 1, get_world_size(), 1), get_world_size())
 	if tiles < get_world_size() ** 2:
-		topRight=(max(1, tiles // get_world_size()), get_world_size())
+		topRight=(max(1, Utils.divideCeil(tiles, get_world_size())), get_world_size())
 	manageRegion((0,0), topRight)
 	Defer.joinAll()
 def woodStrategyTree():

@@ -47,7 +47,7 @@ def harvestGold(amount, currentlyUnlocking, indent):
 		if size != get_world_size():
 			cleanup(size)
 def calcSize(required):
-	oneTreasure=2**(num_unlocked(Unlocks.Mazes)-1)
+	oneTreasure=Preperations.expectedYield(Unlocks.Mazes)
 	fullYield=301*oneTreasure
 	for size in range(get_world_size() - 1, 0, -1):
 		sizeYield=size ** 2 * fullYield

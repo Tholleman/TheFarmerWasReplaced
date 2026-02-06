@@ -14,42 +14,67 @@ def harvestCactus(amount, currentlyUnlocking, indent):
 	quick_print(indent, amount, "Cactus")
 	UnlockHelper.workToUnlock(Unlocks.Cactus, currentlyUnlocking, "  " + indent)
 	def calculateTilesNeeded():
-		tiles=Preperations.expectedTilesNeeded(Items.Cactus, Unlocks.Cactus, amount, False, Globals.GLOBALS["AREA"])
-		return Utils.roundTo(tiles, Globals.GLOBALS["AREA"])
+		return Preperations.expectedTilesNeeded(Items.Cactus, Unlocks.Cactus, amount, False, Globals.GLOBALS["AREA"])
 	while num_items(Items.Cactus) < amount:
-		tiles=Preperations.preperations(Items.Cactus, calculateTilesNeeded, currentlyUnlocking, indent)
+		tiles=Preperations.preperations(Items.Cactus, calculateTilesNeeded, currentlyUnlocking, indent, 1.1)
 		ground.onlyPrepareGround(Grounds.Soil)
-		quick_print(indent, amount, "Cactus using", tiles / Globals.GLOBALS["AREA"], "fields")
+		quick_print(indent, amount, "Cactus using ~", tiles, "tiles")
 		for _ in range(0, tiles, Globals.GLOBALS["AREA"]):
-			plantFieldFullOfCactus()
-def plantFieldFullOfCactus():
+			dimensions=calcSize(amount - num_items(Items.Cactus))
+			plantFieldFullOfCactus(dimensions)
+def calcSize(missing):
+	multiplier=Preperations.expectedYield(Unlocks.Cactus)
+	for length in range(get_world_size() - 1, 0, -1):
+		tiles=length ** 2
+		cactusYield=tiles ** 2 * multiplier
+		if cactusYield < missing:
+			height=length + 1
+			width=height
+			while True:
+				width -= 1
+				cactusYield=(width * height) ** 2 * multiplier
+				if cactusYield < missing:
+					break
+			return (width + 1, height)
+	return (1, 1)
+def plantFieldFullOfCactus(dimensions):
 	movement.toCoordinates(0, 0)
-	for action, direction in [(plantColumn, East), (sortRow, North)]:
-		for i in range(get_world_size()):
-			if (i+1) % max_drones():
-				while num_drones() == max_drones() and max_drones() > 1:
-					pass
-			Defer.defer(action)
-			move(direction)
-		Defer.joinAll()
+	def plantColumn(start, end):
+		start=Defer.splitAxis(start, end, plantColumn)
+		for column in range(start, end):
+			movement.toCoordinates(column, 0)
+			plantCactus()
+			for _ in range(dimensions[1] - 1):
+				move(North)
+				plantCactus()
+				if measure() < measure(South):
+					swap(South)
+			movement.toCoordinates(get_pos_x(), 0)
+			sortRow(North, South, 1, dimensions[1])
+	plantColumn(0, dimensions[0])
+	Defer.joinAll()
+	fullyGrownAt=get_time() + 1
+	def sortHorizontal(start, end):
+		start=Defer.splitAxis(start, end, sortHorizontal)
+		for row in range(start, end):
+			movement.toCoordinates(0, row)
+			sortRow(East, West, 0, dimensions[0])
+	sortHorizontal(0, dimensions[1])
+	movement.toCoordinates(0, 0)
+	Defer.joinAll()
+	while get_time() < fullyGrownAt:
+		pass
 	Harvesting.forceHarvest()
-def plantColumn():
-	plantCactus()
-	for _ in range(get_world_size()-1):
-		move(North)
-		plantCactus()
-		if measure() < measure(South):
-			swap(South)
-	move(North)
-	sortRow(North, South, 1)
 def plantCactus():
 	Harvesting.onlyKeep([Entities.Cactus])
 	plant(Entities.Cactus)
-def sortRow(direction=East, reverse=West, sortedTopRows=0):
-	for round in range(1,get_world_size()):
+def sortRow(direction, reverse, sortedTopRows, length):
+	for round in range(1, length):
 		if measure() > measure(direction):
 			swap(direction)
-		stepsToDirection=max(1, get_world_size() - round - sortedTopRows - 1)
+		stepsToDirection=length - round - sortedTopRows - 1
+		if stepsToDirection <= 0:
+			return
 		newlySortedRows=1
 		for _ in range(stepsToDirection):
 			move(direction)

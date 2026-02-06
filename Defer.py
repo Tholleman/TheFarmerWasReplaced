@@ -86,3 +86,12 @@ def splitRegion(corner1, corner2, action):
 	if spawn_drone(passCorner):
 		return splitRegion(makeCorner(corner1[unchangedI]), corner2, action)
 	return corner1
+def splitAxis(axis1, axis2, action):
+	if axis2 - axis1 <= 1:
+		return axis1
+	half=(axis1 + axis2) // 2
+	def passAxis():
+		action(axis1, half)
+	if spawn_drone(passAxis):
+		return splitAxis(half, axis2, action)
+	return axis1
