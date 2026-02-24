@@ -34,8 +34,6 @@ def b2s():
 		# Move to column 0 if the apple is in a lower y
 		if appleY < get_pos_y() and get_pos_x() != 0:
 			if get_pos_y() % 2 == 0:
-				# while move(East):
-				# 	pass
 				move(North)
 			while move(West):
 				pass

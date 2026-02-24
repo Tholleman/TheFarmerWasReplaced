@@ -34,3 +34,7 @@ def formatSeconds(seconds):
 			time+="0"
 		time+=str(seconds)
 	return time
+def fail():
+	fail = 0/0
+def breakpoint():
+	pass

@@ -3,7 +3,7 @@ import MazeSolver
 from movement import *
 from MazeUtils import popSet
 
-def exploreMaze(size):
+def exploreMaze(size: int) -> MazeField:
 	log=createExplorer(None)()
 	tiles=initTiles(size)
 	while len(log["orphans"]):
@@ -27,43 +27,54 @@ def mapTiles(tiles, log):
 		added.add(key)
 	for pos in added:
 		log.pop(pos)
-def initTiles(size):
+def initTiles(size: int):
 	tiles=[]
 	for _ in range(size):
 		column=[]
 		for _ in range(size):
 			column.append(None)
 		tiles.append(column)
-	tiles.append(set())
 	return tiles
-def createExplorer(direction):
+def createExplorer(direction: Direction | None):
 	def explorer():
 		history=[]
-		currentTile={"untested":{North, East, South, West},"knownGood":{REVERSE[direction]},"knownWalls":set(),"origin":None}
+		currentTile={
+			"untested":{North, East, South, West},
+			"knownGood":{REVERSE[direction]},
+			"knownWalls":set(),
+			"origin":None,
+			"distance":None
+		}
 		if direction != None:
 			currentTile["untested"].remove(REVERSE[direction])
 			move(direction)
 		else:
 			currentTile["knownGood"].remove(None)
-		log={(get_pos_x(), get_pos_y()): currentTile}
+		log: dict[Any, Any]={(get_pos_x(), get_pos_y()): currentTile}
 		children=[]
 		while len(history) or len(currentTile["untested"]):
 			setWalls(currentTile)
-			newDirection=popSet(currentTile["untested"])
+			newDirection = popSet(currentTile["untested"])
 			if newDirection != None:
 				currentTile["knownGood"].add(newDirection)
 				pid=None
-				if len(currentTile["untested"]):
-					pid=spawn_drone(createExplorer(newDirection))
+				if len(currentTile["untested"]) or len(history):
+					pid = spawn_drone(createExplorer(newDirection))
 				if pid:
 					children.append(pid)
 				else:
 					if len(history) or len(currentTile["untested"]):
 						history.append(newDirection)
 					move(newDirection)
-					currentTile={"untested":{North, East, South, West},"knownGood":{REVERSE[newDirection]},"knownWalls":set(),"origin":None}
+					currentTile = {
+						"untested":{North, East, South, West},
+						"knownGood":{REVERSE[newDirection]},
+						"knownWalls":set(),
+						"origin":None,
+						"distance":None
+					}
 					currentTile["untested"].remove(REVERSE[newDirection])
-					log[(get_pos_x(), get_pos_y())]=currentTile
+					log[(get_pos_x(), get_pos_y())] = currentTile
 			elif len(history):
 				move(REVERSE[history.pop()])
 				currentTile=log[(get_pos_x(), get_pos_y())]
@@ -94,17 +105,17 @@ def mergeLog(log, childLog):
 			log["orphans"].append(orphan)
 	for pos in childLog:
 		if pos in log:
-			a=0/0
+			throw=0/0
 		else:
-			log[pos]=childLog[pos]
-def printMap(tiles):
+			log[pos] = childLog[pos]
+def printMap(tiles: MazeField):
 	pathMap=["╨", "╞", "╚", "╥",
 			 "║", "╔", "╠", "╡",
 			 "╝", "═", "╩", "╗",
 			 "╣", "╦", "╬"]
-	for y in range(get_world_size() - 1, -1, -1):
+	for y in range(len(tiles) - 1, -1, -1):
 		output=""
-		for x in range(get_world_size()):
+		for x in range(len(tiles) - 1):
 			tile=tiles[x][y]
 			index=-1
 			if North in tile["knownGood"]:
@@ -118,7 +129,3 @@ def printMap(tiles):
 			output+=pathMap[index]
 		quick_print(output)
 	quick_print("")
-if __name__ == "__main__":
-	Globals.SETUP_FUNCTION_MAPS()
-	MazeSolver.createMaze()
-	exploreMaze()

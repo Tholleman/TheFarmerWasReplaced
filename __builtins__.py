@@ -4,6 +4,7 @@
 
 from typing import Any, Optional, Iterable, Tuple, Dict
 from builtins import type, bool, int, float, str, list, set, dict
+from __custom_builtins__ import *
 
 
 # -------------------------------------------------------------------------------
@@ -1075,7 +1076,7 @@ def random() -> float:
 
 
 # -------------------------------------------------------------------------------
-def len(obj):
+def len(obj) -> int:
     """
     Returns the number of items in an object.
 
@@ -1093,7 +1094,7 @@ def len(obj):
 
 
 # -------------------------------------------------------------------------------
-def range(start, stop=None, step=1):
+def range(start, stop=None, step=1) -> Iterable[int]:
     """
     Returns a sequence of numbers from start (inclusive) to stop (exclusive).
 
@@ -1105,24 +1106,6 @@ def range(start, stop=None, step=1):
     ```
     for i in range(5):
         print(i)  # 0, 1, 2, 3, 4
-    ```
-    """
-    ...
-
-
-# -------------------------------------------------------------------------------
-def str(obj: Any) -> str:
-    """
-    Converts an object to its string representation.
-
-    returns the string representation of the object.
-
-    takes `1` tick to execute.
-
-    example usage:
-    ```
-    string = str(1000)
-    print(string)  # prints "1000"
     ```
     """
     ...
@@ -1207,9 +1190,10 @@ def change_hat(hat: Hat) -> None:
     """
     ...
 
+type Drone = Any
 
 # -------------------------------------------------------------------------------
-def spawn_drone(function: str) -> Any:
+def spawn_drone(function: str | Callable) -> Drone | None:
     """
     Spawns a new drone in the same position as the drone that ran the `spawn_drone(function)` command. The new drone then begins executing the specified function. After it is done, it will disappear automatically.
 
@@ -1233,7 +1217,7 @@ def spawn_drone(function: str) -> Any:
 
 
 # -------------------------------------------------------------------------------
-def wait_for(drone: Any) -> Any:
+def wait_for(drone: Drone) -> Any:
     """
     Waits until the given drone terminates.
 

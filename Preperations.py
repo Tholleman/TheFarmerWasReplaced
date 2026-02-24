@@ -2,46 +2,46 @@ import Globals
 import power
 
 
-def preperations(item, calculateTilesNeeded, currentlyUnlocking, indent, seedsMargin=1):
-	tiles=calculateTilesNeeded()
-	oldTiles=-1
+def preperations(item, calculateTilesNeeded: Callable[[], float], currentlyUnlocking, indent, seedsMargin: float = 1):
+	tiles = calculateTilesNeeded()
+	oldTiles = -1
 	cost=get_cost(Globals.ITEM_TO_ENTITY[item])
 	indent+="  "
 	orderPowerNeeded(item, tiles, currentlyUnlocking)
 	while tiles != oldTiles:
-		oldTiles=tiles
+		oldTiles = tiles
 		if len(cost) != 0:
 			if workForSeeds(cost, tiles, currentlyUnlocking, indent, seedsMargin):
 				tiles=calculateTilesNeeded()
 		if workForPower(currentlyUnlocking, indent):
 			tiles=calculateTilesNeeded()
 	return tiles
-def expectedTilesNeeded(item, unlock, amount, polyculture, baseYieldPerTile=1):
-	missing=amount - num_items(item)
+def expectedTilesNeeded(item: Item, unlock: Unlock, amount: float, polyculture: int | bool, baseYieldPerTile: float = 1):
+	missing = amount - num_items(item)
 	return missing / expectedYield(unlock, polyculture, baseYieldPerTile)
-def expectedYield(unlock, polyculture=0, baseYieldPerTile=1):
-	expectedYieldWithBonus=2**(num_unlocked(unlock)-1) * baseYieldPerTile
+def expectedYield(unlock: Unlock, polyculture: int | bool = 0, baseYieldPerTile: float = 1):
+	expectedYieldWithBonus: float = 2 ** (num_unlocked(unlock) - 1) * baseYieldPerTile
 	if polyculture:
-		expectedYieldWithBonus*=(5*2**polyculture)*0.5
+		expectedYieldWithBonus *= (5 * 2 ** polyculture) * 0.5
 	return expectedYieldWithBonus
-def workForSeeds(cost, tiles, orders, indent, margin):
-	amountOfSeeds=max(1, tiles*margin)
+def workForSeeds(cost: dict[Item, float], tiles: float, orders, indent, margin: float):
+	amountOfSeeds: float = max(1, tiles * margin)
 	if amountOfSeeds <= 0:
 		return False
-	totalCost={}
+	totalCost: dict[Item, float] = {}
 	for item in cost:
-		totalCost[item]=cost[item] * amountOfSeeds
+		totalCost[item] = cost[item] * amountOfSeeds
 		if item in orders["items"]:
-			totalCost[item]+=orders["items"].pop(item)
-	didWork=False
-	allInStock=False
+			totalCost[item] += orders["items"].pop(item)
+	didWork = False
+	allInStock = False
 	while not allInStock:
 		allInStock = True
 		for item in totalCost:
 			if num_items(item) < totalCost[item]:
 				Globals.ITEM_TO_FUNCTION[item](totalCost[item], orders, indent)
-				didWork=True
-				allInStock=False
+				didWork = True
+				allInStock = False
 	return didWork
 def workForPower(orders, indent):
 	if num_unlocked(Unlocks.Sunflowers) == 0:

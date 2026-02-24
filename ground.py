@@ -31,9 +31,3 @@ def updateArea():
 	Globals.GLOBALS["AREA"]=get_world_size()**2
 	return True
 UnlocksPath.afterUnlockDo(Unlocks.Expand, updateArea)
-
-Globals.GLOBALS["MINIMUM_WATER"]=0
-def increaseMinimumWater():
-	Globals.GLOBALS["MINIMUM_WATER"]=min(0.75, num_unlocked(Unlocks.Speed) * 0.05 - 0.1)
-	return Globals.GLOBALS["MINIMUM_WATER"] < 0.75
-UnlocksPath.afterUnlockDo(Unlocks.Speed, increaseMinimumWater)

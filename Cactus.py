@@ -47,7 +47,7 @@ def plantFieldFullOfCactus(dimensions):
 			for _ in range(dimensions[1] - 1):
 				move(North)
 				plantCactus()
-				if measure() < measure(South):
+				if measure() < measure(South): # pyright: ignore[reportOperatorIssue]
 					swap(South)
 			movement.toCoordinates(get_pos_x(), 0)
 			sortRow(North, South, 1, dimensions[1])
@@ -70,7 +70,7 @@ def plantCactus():
 	plant(Entities.Cactus)
 def sortRow(direction, reverse, sortedTopRows, length):
 	for round in range(1, length):
-		if measure() > measure(direction):
+		if measure() > measure(direction): # pyright: ignore[reportOperatorIssue]
 			swap(direction)
 		stepsToDirection=length - round - sortedTopRows - 1
 		if stepsToDirection <= 0:
@@ -78,17 +78,17 @@ def sortRow(direction, reverse, sortedTopRows, length):
 		newlySortedRows=1
 		for _ in range(stepsToDirection):
 			move(direction)
-			if measure() > measure(direction):
+			if measure() > measure(direction): # pyright: ignore[reportOperatorIssue]
 				newlySortedRows=1
 				swap(direction)
 			else:
 				newlySortedRows+=1
 		action=False
 		for _ in range(stepsToDirection - 1):
-			if measure() < measure(reverse):
+			if measure() < measure(reverse): # pyright: ignore[reportOperatorIssue]
 				action=swap(reverse)
 			move(reverse)
-		if measure() < measure(reverse):
+		if measure() < measure(reverse): # pyright: ignore[reportOperatorIssue]
 			action=swap(reverse)
 		if not action:
 			return
@@ -108,4 +108,4 @@ def printCactus():
 Globals.ITEM_TO_FUNCTION[Items.Cactus]=harvestCactus
 
 if __name__ == "__main__":
-	Debug.startBenchmark(Items.Cactus, goal, 0, prepareTill)
+	Debug.startBenchmark(Items.Cactus, goal, 0, prepareTill) # pyright: ignore[reportUndefinedVariable]

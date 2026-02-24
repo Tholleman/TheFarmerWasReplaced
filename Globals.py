@@ -92,7 +92,7 @@ ITEM_TO_ENTITY={
 	Items.Cactus: Entities.Cactus,
 	Items.Bone: Entities.Apple,
 }
-REVERSE={
+REVERSE: dict[Direction | None, Direction | None] ={
 	North: South,
 	South: North,
 	East: West,
