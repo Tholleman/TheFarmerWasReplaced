@@ -14,8 +14,6 @@ def waitUntilInBounds(c1: Coordinate, c2: Coordinate, tiles: MazeField, context:
 		if theoraticalTesting(c1, c2, tiles):
 			isolateRegion(c1, c2, tiles, context)
 		elif get_time() - context["lastCheck"] > 640 / get_world_size():
-			if movement.getPos() == (27, 30):
-				Debug.breakpoint()
 			context["lastCheck"] = get_time()
 			if retestRegion(tiles, c1, c2, context):
 				isolateRegion(c1, c2, tiles, context)
@@ -39,6 +37,8 @@ def theoraticalTesting(c1: Coordinate, c2: Coordinate, tiles: MazeField):
 		South: {"i": 1, "pos": c1[1], "remaining": width},
 		West:  {"i": 0, "pos": c1[0], "remaining": height}
 	}
+	def isAtEdge(pos: Coordinate):
+		return pos[tracker[edge]["i"]] == tracker[edge]["pos"]
 	queue = [c1]
 	visited = {c1}
 	while len(queue):
@@ -47,7 +47,7 @@ def theoraticalTesting(c1: Coordinate, c2: Coordinate, tiles: MazeField):
 		tile = tiles[x][y]
 		directions = list(tile["knownGood"])
 		for edge in tracker:
-			if pos[tracker[edge]["i"]] == tracker[edge]["pos"]:
+			if isAtEdge(pos):
 				tracker[edge]["remaining"] -= 1
 				if edge in directions:
 					directions.remove(edge)
@@ -61,8 +61,8 @@ def theoraticalTesting(c1: Coordinate, c2: Coordinate, tiles: MazeField):
 			return False
 	return True
 def isolateRegion(c1: Coordinate, c2: Coordinate, tiles: MazeField, context: MazeContext):
-	change_hat(Hats.Green_Hat)
-	context["connectedRegion"]=True
+	Debug.changeHat(Hats.Green_Hat)
+	context["connectedRegion"] = True
 	for x in range(c1[0], c2[0]):
 		Utils.safeRemove(tiles[x][c1[1]]["knownWalls"], South)
 		Utils.safeRemove(tiles[x][c1[1]]["knownGood"], South)

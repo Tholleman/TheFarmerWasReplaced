@@ -1,7 +1,7 @@
 import Debug
 import Globals
 
-speed=1
+speed=100
 
 def benchmark(expected, file, items, args, expansion, unlocks={}, locks=[], amount=10, seedStart=0):
 	unlockOverride={}
@@ -77,8 +77,8 @@ def benchmark(expected, file, items, args, expansion, unlocks={}, locks=[], amou
 
 # benchmark(31.8, "WeirdSubstance", {Items.Power:999999999, Items.Water: 999999999}, {"goal":100000000}, 9, {}, [], 1)
 
-# benchmark(126.1, "MazeSolver", {Items.Power:999999999, Items.Weird_Substance: 999999999}, {"goal":346752}, 4, {}, [Unlocks.Megafarm], 10)
-# benchmark(281.7, "MazeSolver", {Items.Power:999999999, Items.Weird_Substance: 999999999}, {"goal":9863168}, 9, {}, [], 5)
+# benchmark(125.8, "MazeSolver", {Items.Power:999999999, Items.Weird_Substance: 999999999}, {"goal":346752}, 4, {}, [Unlocks.Megafarm], 10)
+benchmark(281.9, "MazeSolver", {Items.Power:999999999, Items.Weird_Substance: 999999999}, {"goal":9863168}, 9, {}, [], 5)
 
 # benchmark("138.21", "Dinosaur", {Items.Cactus: 999999999}, {"goal": 1000}, 6)
 # benchmark(937.2, "Dinosaur", {Items.Cactus: 999999999, Items.Power: 999999999}, {"goal": 1000}, 9)

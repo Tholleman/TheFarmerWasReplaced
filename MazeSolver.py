@@ -91,7 +91,7 @@ def solveMaze(size: int, amount: int):
 				harvest()
 				return
 	manageRegion((0, 0), (size, size))
-	change_hat(Hats.Straw_Hat)
+	Debug.changeHat(Hats.Straw_Hat)
 	Defer.joinAll()
 def createInstructions(tiles: MazeField, context: MazeContext):
 	if get_entity_type() == Entities.Treasure:

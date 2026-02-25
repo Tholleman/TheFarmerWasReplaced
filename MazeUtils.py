@@ -1,7 +1,7 @@
 import Globals
 
 
-def moveTreasure(size):
+def moveTreasure(size: int):
 	return use_item(Items.Weird_Substance, size * 2**(num_unlocked(Unlocks.Mazes)-1))
 def popSet[T](set: set[T]):
 	for first in set:
@@ -12,14 +12,14 @@ def getTile(tiles: MazeField, x: int, y: int, direction: Direction):
 	return tiles[x][y]
 def nextCoordinates(x: int, y: int, direction: Direction) -> Coordinate:
 	if direction == North:
-		return x,y+1
+		return x, y + 1
 	if direction == South:
-		return x,y-1
+		return x, y - 1
 	if direction == East:
-		return x+1,y
+		return x + 1, y
 	if direction == West:
-		return x-1,y
-	return x,y
+		return x - 1, y
+	return x, y
 def retestWalls(tiles: list[list[MazeCell]], x: int, y: int):
 	tile = tiles[x][y]
 	becamePath: set[Direction] = set()

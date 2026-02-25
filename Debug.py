@@ -38,3 +38,5 @@ def fail():
 	fail = 0/0
 def breakpoint():
 	pass
+def changeHat(hat: Hat):
+	change_hat(hat)

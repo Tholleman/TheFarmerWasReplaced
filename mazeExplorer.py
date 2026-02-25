@@ -1,11 +1,13 @@
+import Debug
 from Globals import REVERSE
+import Globals
 import MazeSolver
 from movement import *
-from MazeUtils import popSet
+import MazeUtils
 
 def exploreMaze(size: int) -> MazeField:
-	log=createExplorer(None)()
-	tiles=initTiles(size)
+	log = createExplorer(None, size)()
+	tiles = initTiles(size)
 	while len(log["orphans"]):
 		mergeLog(log, wait_for(log["orphans"].pop(0)))
 		mapTiles(tiles, log)
@@ -18,12 +20,12 @@ def exploreMaze(size: int) -> MazeField:
 	# printMap(tiles)
 	return tiles
 def mapTiles(tiles, log):
-	added=set()
+	added = set()
 	for key in log:
 		if key == "orphans":
 			continue
-		x,y=key
-		tiles[x][y]=log[key]
+		x,y = key
+		tiles[x][y] = log[key]
 		added.add(key)
 	for pos in added:
 		log.pop(pos)
@@ -35,7 +37,7 @@ def initTiles(size: int):
 			column.append(None)
 		tiles.append(column)
 	return tiles
-def createExplorer(direction: Direction | None):
+def createExplorer(direction: Direction | None, size: int):
 	def explorer():
 		history=[]
 		currentTile={
@@ -54,12 +56,14 @@ def createExplorer(direction: Direction | None):
 		children=[]
 		while len(history) or len(currentTile["untested"]):
 			setWalls(currentTile)
-			newDirection = popSet(currentTile["untested"])
+			if max_drones() == 1:
+				handleTreasure(log, currentTile, size)
+			newDirection = MazeUtils.popSet(currentTile["untested"])
 			if newDirection != None:
 				currentTile["knownGood"].add(newDirection)
 				pid=None
 				if len(currentTile["untested"]) or len(history):
-					pid = spawn_drone(createExplorer(newDirection))
+					pid = spawn_drone(createExplorer(newDirection, size))
 				if pid:
 					children.append(pid)
 				else:
@@ -97,6 +101,23 @@ def setWalls(currentTile):
 	for wall in walls:
 		currentTile["untested"].remove(wall)
 		currentTile["knownWalls"].add(wall)
+def handleTreasure(log, currentTile, size):
+	if get_entity_type() == Entities.Treasure:
+		MazeUtils.moveTreasure(size)
+	toRemove = set()
+	for direction in currentTile["untested"]:
+		coordinate = MazeUtils.nextCoordinates(get_pos_x(), get_pos_y(), direction)
+		if coordinate in log:
+			Debug.breakpoint()
+			toRemove.add(direction)
+			currentTile["knownGood"].add(direction)
+			otherTile = log[coordinate]
+			reverse = Globals.REVERSE[direction]
+			Utils.safeRemove(otherTile["untested"], reverse)
+			Utils.safeRemove(otherTile["knownWalls"], reverse)
+			otherTile["knownGood"].add(reverse)
+	for direction in toRemove:
+		currentTile["untested"].remove(direction)
 def mergeLog(log, childLog):
 	for orphan in childLog.pop("orphans"):
 		if has_finished(orphan):
