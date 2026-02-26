@@ -84,7 +84,7 @@ POWER_USAGE_PER_TILE={
 ITEM_TO_FUNCTION={}
 ITEM_TO_ENTITY={
 	Items.Hay: Entities.Grass,
-	Items.Wood: Entities.Tree,
+	Items.Wood: Entities.Bush,
 	Items.Carrot: Entities.Carrot,
 	Items.Power: Entities.Sunflower,
 	Items.Pumpkin: Entities.Pumpkin,

@@ -5,6 +5,7 @@ import UnlockHelper
 import ground
 import Harvesting
 import Globals
+import movement
 
 def harvestHay(amount, currentlyUnlocking, indent):
 	if num_items(Items.Hay) >= amount:
@@ -21,6 +22,9 @@ def harvestHay(amount, currentlyUnlocking, indent):
 		while num_items(Items.Hay) < amount:
 			plantHay()
 			move(North)
+	if tiles < get_world_size() / 4:
+		behaviour()
+		return
 	Defer.spawnMoveAct(behaviour, min(get_world_size(), max_drones()), East)
 def plantHay():
 	while not ((can_harvest() and harvest()) or get_entity_type() == None):

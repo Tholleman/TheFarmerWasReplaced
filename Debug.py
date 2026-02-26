@@ -36,6 +36,9 @@ def formatSeconds(seconds):
 	return time
 def fail():
 	fail = 0/0
+def assertion(b: bool):
+	if not b:
+		fail()
 def breakpoint():
 	pass
 def changeHat(hat: Hat):

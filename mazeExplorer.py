@@ -108,7 +108,6 @@ def handleTreasure(log, currentTile, size):
 	for direction in currentTile["untested"]:
 		coordinate = MazeUtils.nextCoordinates(get_pos_x(), get_pos_y(), direction)
 		if coordinate in log:
-			Debug.breakpoint()
 			toRemove.add(direction)
 			currentTile["knownGood"].add(direction)
 			otherTile = log[coordinate]
