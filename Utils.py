@@ -15,3 +15,5 @@ def randBetween(min: int, maxExclusive: int) -> int:
 def safeRemove(arr: list | set, toRemove):
 	if toRemove in arr:
 		arr.remove(toRemove)
+def wrapped(n: int, wrapAt) -> int:
+	return (n + wrapAt) % wrapAt

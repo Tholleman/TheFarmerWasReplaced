@@ -14,7 +14,7 @@ def toCoordinates(x: int, y: int):
 	direction = Utils.ternary(goSouth, South, North)
 	while get_pos_y() != y:
 		move(direction)
-def actMoveAct(action: Callable, count: int, direction: Direction):
+def actMoveAct(action: Callable, count: float, direction: Direction):
 	for _ in range(count - 1):
 		action()
 		move(direction)

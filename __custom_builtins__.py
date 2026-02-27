@@ -16,3 +16,4 @@ class MazeTracker(TypedDict):
 	pos: int
 	remaining: int
 	i: int
+type Reducer[T] = Tuple[T, Callable[[T, T], T]]

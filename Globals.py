@@ -55,7 +55,7 @@ HARVEST_ORDER=[
 	Items.Hay,
 	Items.Weird_Substance
 ]
-ITEM_TO_SINGLE_PLANT={}
+ITEM_TO_SINGLE_PLANT: dict[Item, Callable] ={}
 ITEM_EFFORT={
 	Items.Weird_Substance:1,
 	Items.Hay:1,
